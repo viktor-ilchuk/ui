@@ -20,10 +20,10 @@ such restriction.
 import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { useParams } from 'react-router-dom'
+import { OnChange } from 'react-final-form-listeners'
 
-import Input from '../../common/Input/Input'
 import NoData from '../../common/NoData/NoData'
-import { ConfirmDialog, Tooltip, TextTooltipTemplate, RoundedIcon } from 'igz-controls/components'
+import { ConfirmDialog, Tooltip, TextTooltipTemplate, RoundedIcon, FormInput } from 'igz-controls/components'
 
 import { headers } from './detailsRequestedFeatures.utils'
 import { parseFeatureTemplate } from '../../utils/parseFeatureTemplate'
@@ -43,14 +43,13 @@ const DetailsRequestedFeaturesView = ({
   confirmDialogData,
   currentData,
   editableItemIndex,
+  formState,
   handleAliasChange,
   handleDelete,
   handleDiscardChanges,
   handleItemClick,
-  isAliasNameValid,
   onFinishEdit,
   setConfirmDialogData,
-  setIsAliasNameValid,
   selectedItem
 }) => {
   const params = useParams()
@@ -116,21 +115,20 @@ const DetailsRequestedFeaturesView = ({
                   <>
                     <div className="item-requested-features__table-cell cell_alias">
                       <div className="cell_alias__input-wrapper">
-                        <Input
-                          className="input"
+                        <FormInput
                           focused
-                          invalid={!isAliasNameValid}
-                          onChange={alias => handleAliasChange(index, alias)}
-                          setInvalid={value => setIsAliasNameValid(value)}
-                          type="text"
+                          name={'requestedFeatures.alias'}
                           validationRules={getValidationRules('feature.vector.alias')}
-                          value={alias}
+                          onChange={alias => handleAliasChange(index, alias)}
                         />
+                        <OnChange name={'requestedFeatures.alias'}>
+                          {alias => handleAliasChange(index, alias)}
+                        </OnChange>
                       </div>
                     </div>
                     <div className="cell_actions cell_actions-visible">
                       <RoundedIcon
-                        disabled={!isAliasNameValid}
+                        disabled={formState.invalid || formState.validating}
                         onClick={onFinishEdit}
                         tooltipText="Apply"
                       >
@@ -236,10 +234,8 @@ DetailsRequestedFeaturesView.propTypes = {
   handleDelete: PropTypes.func.isRequired,
   handleDiscardChanges: PropTypes.func.isRequired,
   handleItemClick: PropTypes.func.isRequired,
-  isAliasNameValid: PropTypes.bool.isRequired,
   onFinishEdit: PropTypes.func.isRequired,
   setConfirmDialogData: PropTypes.func.isRequired,
-  setIsAliasNameValid: PropTypes.func.isRequired,
   selectedItem: PropTypes.shape({}).isRequired
 }
 

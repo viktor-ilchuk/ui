@@ -32,11 +32,13 @@ import {
 
 const DetailsRequestedFeatures = ({
   changes,
+  formState,
   handleEditInput,
   selectedItem,
   setChanges,
   setChangesData,
-  setChangesCounter
+  setChangesCounter,
+  setFeatures
 }) => {
   const [detailsRequestedFeaturesState, detailsRequestedFeaturesDispatch] = useReducer(
     detailsRequestedFeaturesReducer,
@@ -49,8 +51,11 @@ const DetailsRequestedFeatures = ({
   })
   const [editableItemIndex, setEditableItemIndex] = useState(null)
   const [labelFeatureIsEditable, setLabelFeatureIsEditable] = useState(false)
-  const [isAliasNameValid, setIsAliasNameValid] = useState(true)
   const [generatedFeaturesArray, setGeneratedFeaturesArray] = useState([])
+
+  useEffect(() => {
+    setFeatures(currentData)
+  }, [currentData])
 
   useEffect(() => {
     return () => {
@@ -101,7 +106,6 @@ const DetailsRequestedFeatures = ({
 
   const handleItemClick = (field, fieldType, info, index, featureTemplate) => {
     if (isNil(editableItemIndex) || editableItemIndex !== index) {
-      setIsAliasNameValid(true)
       setEditableItemIndex(index)
       setGeneratedFeaturesArray(currentData)
       detailsRequestedFeaturesDispatch({
@@ -224,7 +228,6 @@ const DetailsRequestedFeatures = ({
       setLabelFeatureIsEditable(false)
     }
     setEditableItemIndex(null)
-    setIsAliasNameValid(true)
     setCurrentData(changesData.features.currentFieldValue)
     setChangesData(changesData)
   }
@@ -251,14 +254,13 @@ const DetailsRequestedFeatures = ({
       confirmDialogData={confirmDialogData}
       currentData={currentData}
       editableItemIndex={editableItemIndex}
+      formState={formState}
       handleAliasChange={handleAliasChange}
       handleDiscardChanges={handleDiscardChanges}
       handleDelete={handleDelete}
       handleItemClick={handleItemClick}
-      isAliasNameValid={isAliasNameValid}
       onFinishEdit={onFinishEdit}
       setConfirmDialogData={setConfirmDialogData}
-      setIsAliasNameValid={setIsAliasNameValid}
       selectedItem={selectedItem}
     />
   )
@@ -267,7 +269,8 @@ const DetailsRequestedFeatures = ({
 DetailsRequestedFeatures.propTypes = {
   changes: PropTypes.object.isRequired,
   handleEditInput: PropTypes.func.isRequired,
-  selectedItem: PropTypes.shape({}).isRequired
+  selectedItem: PropTypes.shape({}).isRequired,
+  setFeatures: PropTypes.func.isRequired
 }
 
 export default DetailsRequestedFeatures

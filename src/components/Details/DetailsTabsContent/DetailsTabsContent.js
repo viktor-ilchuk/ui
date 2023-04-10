@@ -72,6 +72,7 @@ const DetailsTabsContent = ({
   setChanges,
   setChangesCounter,
   setChangesData,
+  setFeatures,
   setIteration,
   setIterationOption
 }) => {
@@ -195,11 +196,13 @@ const DetailsTabsContent = ({
       return (
         <DetailsRequestedFeatures
           changes={detailsStore.changes}
+          formState={formState}
           selectedItem={selectedItem}
           handleEditInput={(value, field) => handleEditInput(value, field)}
           setChanges={setChanges}
           setChangesData={setChangesData}
           setChangesCounter={setChangesCounter}
+          setFeatures={setFeatures}
         />
       )
     default:
@@ -215,6 +218,7 @@ DetailsTabsContent.propTypes = {
   setChanges: PropTypes.func.isRequired,
   setChangesCounter: PropTypes.func.isRequired,
   setChangesData: PropTypes.func.isRequired,
+  setFeatures: PropTypes.func,
   setIteration: PropTypes.func.isRequired,
   setIterationOption: PropTypes.func.isRequired
 }

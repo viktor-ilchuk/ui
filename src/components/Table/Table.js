@@ -52,6 +52,7 @@ const Table = ({
   pageData,
   retryRequest,
   selectedItem,
+  setFeatures,
   sortProps,
   tab,
   tableHeaders
@@ -159,6 +160,7 @@ const Table = ({
       params={params}
       retryRequest={retryRequest}
       selectedItem={selectedItem}
+      setFeatures={setFeatures}
       sortProps={sortProps}
       tableContent={
         tab === MONITOR_JOBS_TAB || tab === SCHEDULE_TAB ? content : tableContent.content
@@ -206,6 +208,7 @@ Table.propTypes = {
   pageData: PropTypes.shape({}).isRequired,
   retryRequest: PropTypes.func,
   selectedItem: PropTypes.shape({}),
+  setFeatures: PropTypes.func,
   sortProps: SORT_PROPS,
   tab: PropTypes.string,
   tableHeaders: PropTypes.array
