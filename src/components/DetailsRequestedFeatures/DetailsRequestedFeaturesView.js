@@ -119,7 +119,6 @@ const DetailsRequestedFeaturesView = ({
                           focused
                           name={'requestedFeatures.alias'}
                           validationRules={getValidationRules('feature.vector.alias')}
-                          onChange={alias => handleAliasChange(index, alias)}
                         />
                         <OnChange name={'requestedFeatures.alias'}>
                           {alias => handleAliasChange(index, alias)}
