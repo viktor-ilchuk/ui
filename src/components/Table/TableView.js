@@ -67,6 +67,7 @@ const TableView = ({
   params,
   retryRequest,
   selectedItem,
+  setFeatures,
   sortProps,
   tab,
   tableContent,
@@ -256,6 +257,7 @@ const TableView = ({
           pageData={pageData}
           retryRequest={retryRequest}
           selectedItem={selectedItem}
+          setFeatures={setFeatures}
           tab={tab}
         />
       )}
@@ -286,6 +288,7 @@ TableView.propTypes = {
   params: PropTypes.shape({}).isRequired,
   retryRequest: PropTypes.func.isRequired,
   selectedItem: PropTypes.shape({}).isRequired,
+  setFeatures: PropTypes.func,
   sortProps: SORT_PROPS,
   tab: PropTypes.string,
   tableContent: PropTypes.oneOfType([

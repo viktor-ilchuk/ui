@@ -77,6 +77,7 @@ const Details = ({
   setChanges,
   setChangesCounter,
   setChangesData,
+  setFeatures,
   setInfoContent,
   setIteration,
   setIterationOption,
@@ -314,6 +315,7 @@ const Details = ({
             setChanges={setChanges}
             setChangesCounter={setChangesCounter}
             setChangesData={setChangesData}
+            setFeatures={setFeatures}
             setIteration={setIteration}
             setIterationOption={setIterationOption}
           />
@@ -384,6 +386,7 @@ Details.propTypes = {
   removeModelFeatureVector: PropTypes.func,
   retryRequest: PropTypes.func,
   selectedItem: PropTypes.shape({}).isRequired,
+  setFeatures: PropTypes.func,
   tab: PropTypes.string
 }
 

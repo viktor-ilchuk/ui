@@ -37,6 +37,7 @@ const FeatureVectorsView = React.forwardRef(
       applyDetailsChanges,
       createFeatureVector,
       createVectorPopUpIsOpen,
+      detailsFormInitialValues,
       featureStore,
       featureVectors,
       filtersStore,
@@ -46,6 +47,7 @@ const FeatureVectorsView = React.forwardRef(
       selectedFeatureVector,
       selectedRowData,
       setCreateVectorPopUpIsOpen,
+      setFeatures,
       setSelectedFeatureVector,
       tableContent
     },
@@ -77,10 +79,12 @@ const FeatureVectorsView = React.forwardRef(
               actionsMenu={actionsMenu}
               applyDetailsChanges={applyDetailsChanges}
               content={featureVectors}
+              detailsFormInitialValues={detailsFormInitialValues}
               handleCancel={() => setSelectedFeatureVector({})}
               pageData={pageData}
               retryRequest={handleRefresh}
               selectedItem={selectedFeatureVector}
+              setFeatures={setFeatures}
               tab={FEATURE_VECTORS_TAB}
               tableHeaders={tableContent[0]?.content ?? []}
             >
@@ -118,6 +122,7 @@ FeatureVectorsView.propTypes = {
   applyDetailsChanges: PropTypes.func.isRequired,
   createFeatureVector: PropTypes.func.isRequired,
   createVectorPopUpIsOpen: PropTypes.bool.isRequired,
+  detailsFormInitialValues: PropTypes.object.isRequired,
   featureStore: PropTypes.object.isRequired,
   featureVectors: PropTypes.arrayOf(PropTypes.object).isRequired,
   filtersStore: PropTypes.object.isRequired,
@@ -127,6 +132,7 @@ FeatureVectorsView.propTypes = {
   selectedFeatureVector: PropTypes.object.isRequired,
   selectedRowData: PropTypes.object.isRequired,
   setCreateVectorPopUpIsOpen: PropTypes.func.isRequired,
+  setFeatures: PropTypes.func.isRequired,
   setSelectedFeatureVector: PropTypes.func.isRequired,
   tableContent: PropTypes.arrayOf(PropTypes.object).isRequired
 }

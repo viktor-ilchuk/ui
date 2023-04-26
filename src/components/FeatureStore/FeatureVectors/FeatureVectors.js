@@ -63,6 +63,7 @@ const FeatureVectors = ({
   removeFeatureVectors,
   updateFeatureStoreData
 }) => {
+  const [features, setFeatures] = useState([])
   const [featureVectors, setFeatureVectors] = useState([])
   const [selectedFeatureVector, setSelectedFeatureVector] = useState({})
   const [selectedRowData, setSelectedRowData] = useState({})
@@ -84,6 +85,10 @@ const FeatureVectors = ({
   } = React.useContext(FeatureStoreContext)
 
   const pageData = useMemo(() => generatePageData(selectedFeatureVector), [selectedFeatureVector])
+
+  const detailsFormInitialValues = useMemo(
+    () => ({ features }), [features]
+  )
 
   const fetchData = useCallback(
     filters => {
@@ -412,6 +417,7 @@ const FeatureVectors = ({
       applyDetailsChanges={applyDetailsChanges}
       createFeatureVector={createFeatureVector}
       createVectorPopUpIsOpen={createVectorPopUpIsOpen}
+      detailsFormInitialValues={detailsFormInitialValues}
       featureStore={featureStore}
       featureVectors={featureVectors}
       filtersStore={filtersStore}
@@ -422,6 +428,7 @@ const FeatureVectors = ({
       selectedFeatureVector={selectedFeatureVector}
       selectedRowData={selectedRowData}
       setCreateVectorPopUpIsOpen={setCreateVectorPopUpIsOpen}
+      setFeatures={setFeatures}
       setSelectedFeatureVector={handleSelectFeatureVector}
       tableContent={tableContent}
     />
