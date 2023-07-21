@@ -64,6 +64,7 @@ const FeatureSetsPanelTargetStore = ({
   )
   const [targetsPathEditData, setTargetsPathEditData] = useState(targetsPathEditDataInitialState)
   const [passthroughtEnabled, setPassThrouthEnabled] = useState(false)
+  const [previousTargets, setPreviousTargets] = useState({})
   const frontendSpec = useSelector(store => store.appStore.frontendSpec)
 
   const onlineTarget = useMemo(
@@ -555,14 +556,54 @@ const FeatureSetsPanelTargetStore = ({
     })
   }, [setDisableButtons, setNewFeatureSetTarget, setValidation])
 
+  const restoreTargets = useCallback(() => {
+    setSelectedTargetKind(previousTargets.selectedTargetKind)
+    setNewFeatureSetTarget([...previousTargets.featureSetTargets])
+    setData({ ...previousTargets.data })
+    setSelectedPartitionKind({ ...previousTargets.selectedPartitionKind })
+    setPartitionRadioButtonsState({ ...previousTargets.partitionRadioButtonsState })
+  }, [previousTargets, setNewFeatureSetTarget])
+
   useEffect(() => {
     if (featureStore.newFeatureSet.spec.passthrough && !passthroughtEnabled) {
+      setPreviousTargets({
+        data: {
+          ...data,
+          [ONLINE]: {
+            ...data[ONLINE],
+            path: data[ONLINE].path || featureStore.newFeatureSet.spec.targets[1].path
+          },
+          [PARQUET]: {
+            ...data[PARQUET],
+            path: data[PARQUET].path || featureStore.newFeatureSet.spec.targets[0].path
+          }
+        },
+        featureSetTargets: featureStore.newFeatureSet.spec.targets,
+        selectedPartitionKind,
+        selectedTargetKind,
+        partitionRadioButtonsState
+      })
+
       clearTargets()
       setPassThrouthEnabled(true)
     } else if (!featureStore.newFeatureSet.spec.passthrough && passthroughtEnabled) {
+      restoreTargets()
       setPassThrouthEnabled(false)
     }
-  }, [clearTargets, featureStore.newFeatureSet.spec.passthrough, passthroughtEnabled])
+  }, [
+    clearTargets,
+    data,
+    data.externalOffline,
+    data.online,
+    data.parquet,
+    featureStore.newFeatureSet.spec.passthrough,
+    featureStore.newFeatureSet.spec.targets,
+    partitionRadioButtonsState,
+    passthroughtEnabled,
+    restoreTargets,
+    selectedPartitionKind,
+    selectedTargetKind
+  ])
 
   const handlePartitionRadioButtonClick = (value, target) => {
     const keyBucketingNumber = value === 'districtKeys' ? 0 : 1
