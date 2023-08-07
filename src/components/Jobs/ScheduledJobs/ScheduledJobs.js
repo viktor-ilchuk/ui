@@ -47,6 +47,7 @@ import { scheduledJobsActionCreator } from './scheduledJobs.util'
 import { setFilters } from '../../../reducers/filtersReducer'
 import { setNotification } from '../../../reducers/notificationReducer'
 import { useYaml } from '../../../hooks/yaml.hook'
+import jobsApi from '../../../api/jobs-api'
 
 import { ReactComponent as Yaml } from 'igz-controls/images/yaml.svg'
 import { ReactComponent as Run } from 'igz-controls/images/run.svg'
@@ -58,7 +59,7 @@ const ScheduledJobs = ({
   fetchJobFunction,
   fetchJobFunctionSuccess,
   fetchJobs,
-  fetchScheduledJobAccessKey,
+  fetchScheduledJobData,
   handleRunScheduledJob,
   removeScheduledJob
 }) => {
@@ -189,25 +190,38 @@ const ScheduledJobs = ({
         fetchFunctionTemplate,
         fetchJobFunctionSuccess
       )
-      const fetchScheduledJobAccessKeyPromise = fetchScheduledJobAccessKey(
+      const fetchScheduledJobDataPromise = fetchScheduledJobData(
         params.projectName,
         editableItem.name
       )
-        .then(result => {
+        .then( result => {
+          const keyData = result?.data.credentials.access_key
+          const jobData = result?.data.scheduled_object.function.spec
+
           setEditableItem({
             ...editableItem,
             scheduled_object: {
               ...editableItem.scheduled_object,
               credentials: {
-                access_key: result.data.credentials.access_key
+                access_key: keyData
               },
               function: {
                 ...editableItem.scheduled_object.function,
+                spec: {
+                  ...editableItem.scheduled_object.function?.spec,
+                  env: jobData.env,
+                  resources: jobData.resources,
+                  volume_mounts: jobData.volume_mounts,
+                  volumes: jobData.volumes,
+                  node_selector: jobData.node_selector,
+                  preemption_mode: jobData.preemption_mode,
+                  priority_class_name: jobData.priority_class_name
+                },
                 metadata: {
                   ...editableItem.scheduled_object.function?.metadata,
                   credentials: {
                     ...editableItem.scheduled_object.function?.metadata?.credentials,
-                    access_key: result.data.credentials.access_key
+                    access_key: keyData
                   }
                 }
               }
@@ -228,7 +242,7 @@ const ScheduledJobs = ({
           throw error
         })
 
-      Promise.all([getJobFunctionDataPromise, fetchScheduledJobAccessKeyPromise]).then(() => {
+      Promise.all([getJobFunctionDataPromise, fetchScheduledJobDataPromise]).then(() => {
         setJobWizardMode(PANEL_EDIT_MODE)
       })
     },
@@ -237,7 +251,7 @@ const ScheduledJobs = ({
       dispatch,
       fetchFunctionTemplate,
       fetchJobFunctionSuccess,
-      fetchScheduledJobAccessKey,
+      fetchScheduledJobData,
       params.projectName,
       setJobWizardMode
     ]
@@ -299,7 +313,8 @@ const ScheduledJobs = ({
         defaultData: jobWizardMode === PANEL_EDIT_MODE ? editableItem?.scheduled_object : {},
         mode: jobWizardMode,
         wizardTitle: jobWizardMode === PANEL_EDIT_MODE ? 'Edit job' : undefined,
-        onSuccessRequest: () => refreshJobs(filtersStore)
+        onSuccessRequest: () => refreshJobs(filtersStore),
+        editJob: (postData, project) => jobsApi.editJob(postData, project)
       })
 
       setJobWizardIsOpened(true)
