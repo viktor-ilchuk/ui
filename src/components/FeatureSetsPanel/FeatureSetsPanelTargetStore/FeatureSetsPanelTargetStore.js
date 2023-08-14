@@ -562,6 +562,7 @@ const FeatureSetsPanelTargetStore = ({
     setData({ ...previousTargets.data })
     setSelectedPartitionKind({ ...previousTargets.selectedPartitionKind })
     setPartitionRadioButtonsState({ ...previousTargets.partitionRadioButtonsState })
+    setPreviousTargets({})
   }, [previousTargets, setNewFeatureSetTarget])
 
   useEffect(() => {

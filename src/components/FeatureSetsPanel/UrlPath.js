@@ -26,6 +26,7 @@ import { isNil } from 'lodash'
 import Combobox from '../../common/Combobox/Combobox'
 
 import { ARTIFACT_OTHER_TYPE, DATASET_TYPE, MLRUN_STORAGE_INPUT_PATH_SCHEME } from '../../constants'
+import targetPath from '../../utils/parseTargetPath'
 import { getParsedResource } from '../../utils/resources'
 import {
   generateArtifactsList,
@@ -42,6 +43,7 @@ import projectsAction from '../../actions/projects'
 
 const UrlPath = ({
   comboboxSelectList,
+  defaultPath,
   disabled,
   handleUrlOnBlur,
   handleUrlOnFocus,
@@ -66,9 +68,19 @@ const UrlPath = ({
   const [urlProjectPathEntered, setUrlProjectPathEntered] = useState(false)
   const [urlArtifactPathEntered, setUrlArtifactPathEntered] = useState(false)
   const [urlArtifactReferencePathEntered, setUrlArtifactReferencePathEntered] = useState(false)
+  const [comboboxDefaultValues, setComboboxDefaultValues] = useState({})
 
   const dispatch = useDispatch()
   const { projectName: project } = useParams()
+
+  useEffect(() => {
+    if (defaultPath?.path.length && !urlData.path && !invalid) {
+      const { schema, path } = targetPath(defaultPath.path)
+      const [pathType] = comboboxSelectList.filter(option => option.id === `${schema}://`)
+
+      setComboboxDefaultValues({ path, pathType })
+    }
+  }, [])
 
   useEffect(() => {
     if (
@@ -229,7 +241,9 @@ const UrlPath = ({
       disabled={disabled}
       hideSearchInput={!urlProjectItemTypeEntered}
       inputDefaultValue={
-        urlData.pathType === MLRUN_STORAGE_INPUT_PATH_SCHEME ? urlData.projectItemType : ''
+        urlData.pathType === MLRUN_STORAGE_INPUT_PATH_SCHEME
+          ? urlData.projectItemType
+          : comboboxDefaultValues?.path || ''
       }
       inputOnChange={handleUrlPathChange}
       inputPlaceholder={urlData.placeholder}
@@ -241,9 +255,11 @@ const UrlPath = ({
       onFocus={handleUrlOnFocus}
       required
       requiredText="This field is required"
+      selectDefaultValue={comboboxDefaultValues?.pathType}
       selectDropdownList={comboboxSelectList}
       selectOnChange={handleUrlPathTypeChange}
       selectPlaceholder="URL"
+      setComboboxDefaultValues={setComboboxDefaultValues}
     />
   )
 }

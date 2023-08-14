@@ -44,7 +44,8 @@ const Combobox = ({
   selectDefaultValue,
   selectDropdownList,
   selectOnChange,
-  selectPlaceholder
+  selectPlaceholder,
+  setComboboxDefaultValues
 }) => {
   const [inputValue, setInputValue] = useState('')
   const [selectValue, setSelectValue] = useState({
@@ -66,10 +67,17 @@ const Combobox = ({
 
   useEffect(() => {
     if (inputDefaultValue.length > 0 && selectValue.id.length > 0 && inputValue.length === 0) {
+      setComboboxDefaultValues({})
       setInputValue(inputDefaultValue)
       inputOnChange(inputDefaultValue)
     }
-  }, [inputDefaultValue, inputOnChange, inputValue.length, selectValue.id.length])
+  }, [
+    inputDefaultValue,
+    inputOnChange,
+    inputValue.length,
+    selectValue.id.length,
+    setComboboxDefaultValues
+  ])
 
   useEffect(() => {
     if (selectDefaultValue?.label.length > 0 && selectValue.label.length === 0) {
@@ -287,7 +295,8 @@ Combobox.defaultProps = {
   required: false,
   requiredText: '',
   selectDefaultValue: null,
-  selectPlaceholder: ''
+  selectPlaceholder: '',
+  setComboboxDefaultValues: null
 }
 
 Combobox.propTypes = {
@@ -308,7 +317,8 @@ Combobox.propTypes = {
   selectDropdownList: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   selectOnChange: PropTypes.func.isRequired,
   selectDefaultValue: PropTypes.shape({}),
-  selectPlaceholder: PropTypes.string
+  selectPlaceholder: PropTypes.string,
+  setComboboxDefaultValues: PropTypes.func
 }
 
 export default Combobox

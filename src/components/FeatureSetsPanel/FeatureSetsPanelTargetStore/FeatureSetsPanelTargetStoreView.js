@@ -349,6 +349,7 @@ const FeatureSetsPanelTargetStoreView = ({
                       option.id !== V3IO_INPUT_PATH_SCHEME
                   )}
                   disabled={featureStore.newFeatureSet.spec.passthrough}
+                  defaultPath={featureStore.newFeatureSet.spec.targets[2]}
                   invalid={!validation.isExternalOfflineTargetPathValid}
                   handleUrlOnBlur={handleExternalOfflineKindPathOnBlur}
                   handleUrlOnFocus={handleExternalOfflineKindPathOnFocus}
