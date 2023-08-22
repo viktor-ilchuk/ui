@@ -77,6 +77,14 @@ const FeatureSetsPanelTargetStore = ({
     [featureStore.newFeatureSet.spec.targets]
   )
 
+  const externalOfflineTarget = useMemo(
+    () =>
+      featureStore.newFeatureSet.spec.targets.find(
+        targetKind => targetKind.name === EXTERNAL_OFFLINE
+      ),
+    [featureStore.newFeatureSet.spec.targets]
+  )
+
   useEffect(() => {
     if (!targetsPathEditData.online.isModified && !targetsPathEditData.online.isEditMode) {
       setData(state => ({
@@ -818,6 +826,7 @@ const FeatureSetsPanelTargetStore = ({
     <FeatureSetsPanelTargetStoreView
       data={data}
       disableButtons={disableButtons}
+      externalOfflineTarget={externalOfflineTarget}
       featureStore={featureStore}
       handleAdvancedLinkClick={handleAdvancedLinkClick}
       handleDiscardPathChange={handleDiscardPathChange}
