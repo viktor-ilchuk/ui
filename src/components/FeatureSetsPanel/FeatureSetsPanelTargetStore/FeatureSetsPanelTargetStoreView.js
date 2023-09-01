@@ -31,16 +31,23 @@ import Select from '../../../common/Select/Select'
 import UrlPath from '../UrlPath'
 import { Tip, Tooltip, TextTooltipTemplate, RoundedIcon } from 'igz-controls/components'
 
-import { MLRUN_STORAGE_INPUT_PATH_SCHEME, V3IO_INPUT_PATH_SCHEME } from '../../../constants'
+import {
+  MLRUN_STORAGE_INPUT_PATH_SCHEME,
+  REDIS_INPUT_PATH_SCHEME,
+  V3IO_INPUT_PATH_SCHEME
+} from '../../../constants'
 
 import {
+  checkboxModels,
   EXTERNAL_OFFLINE,
   externalOfflineKindOptions,
+  getInvalidParquetPathMessage,
+  isParquetPathValid,
+  onlineKindOptions,
+  NOSQL,
   ONLINE,
   PARQUET,
-  checkboxModels,
-  isParquetPathValid,
-  getInvalidParquetPathMessage
+  REDISNOSQL
 } from './featureSetsPanelTargetStore.util'
 
 import { comboboxSelectList } from '../UrlPath.utils'
@@ -67,6 +74,7 @@ const FeatureSetsPanelTargetStoreView = ({
   handleKeyBucketingNumberChange,
   handleOfflineKindPathChange,
   handleOnlineKindPathChange,
+  handleOnlineKindTypeChange,
   handleExternalOfflineKindTypeChange,
   handlePartitionColsOnBlur,
   handlePartitionColsOnChange,
@@ -107,11 +115,26 @@ const FeatureSetsPanelTargetStoreView = ({
               <div className="target-store__path-wrapper">
                 {targetsPathEditData.online.isEditMode && (
                   <>
+                    <Select
+                      density="medium"
+                      disabled={featureStore.newFeatureSet.spec.passthrough}
+                      floatingLabel
+                      label="NOSQL Kind"
+                      onClick={handleOnlineKindTypeChange}
+                      options={onlineKindOptions}
+                      selectedId={data.online.kind}
+                    />
+
                     <Input
-                      density="normal"
+                      density="medium"
                       floatingLabel
                       focused={frontendSpecIsNotEmpty}
                       invalid={!validation.isOnlineTargetPathValid}
+                      invalidText={
+                        data.online.kind === REDISNOSQL && /[{}]/g.test(data.online.path)
+                          ? 'Invalid Redis URL, change the URL to a valid URL in the form of <redis|rediss>:///<host>[:port]'
+                          : ''
+                      }
                       label="Path"
                       onChange={path =>
                         setData(prevState => ({
@@ -119,9 +142,11 @@ const FeatureSetsPanelTargetStoreView = ({
                           online: { ...prevState.online, path }
                         }))
                       }
-                      placeholder={
-                        'v3io:///projects/{project}/FeatureStore/{name}/nosql/sets/{name}'
-                      }
+                      placeholder={`${
+                        data.online.kind === NOSQL
+                          ? V3IO_INPUT_PATH_SCHEME
+                          : REDIS_INPUT_PATH_SCHEME + '{authority}/'
+                      }projects/{project}/FeatureStore/{name}/${data.online.kind}/sets/{name}`}
                       required
                       setInvalid={value =>
                         setValidation(state => ({
@@ -152,7 +177,10 @@ const FeatureSetsPanelTargetStoreView = ({
                 {!targetsPathEditData.online.isEditMode && (
                   <>
                     <Tooltip
-                      className="path-data online-path"
+                      className={classNames(
+                        'path-data online-path',
+                        !validation.isOnlineTargetPathValid && 'online-path__invalid'
+                      )}
                       template={<TextTooltipTemplate text={data.online.path} />}
                     >
                       {data.online.path}
@@ -439,6 +467,7 @@ FeatureSetsPanelTargetStoreView.propTypes = {
   handleKeyBucketingNumberChange: PropTypes.func.isRequired,
   handleOfflineKindPathChange: PropTypes.func.isRequired,
   handleOnlineKindPathChange: PropTypes.func.isRequired,
+  handleOnlineKindTypeChange: PropTypes.func.isRequired,
   handlePartitionColsOnBlur: PropTypes.func.isRequired,
   handlePartitionColsOnChange: PropTypes.func.isRequired,
   handlePartitionRadioButtonClick: PropTypes.func.isRequired,

@@ -61,7 +61,6 @@ const JobWizardFunctionSelection = ({
   frontendSpec,
   functions,
   isEditMode,
-  isStagingMode,
   params,
   projectStore,
   selectedFunctionData,
@@ -192,8 +191,7 @@ const JobWizardFunctionSelection = ({
         frontendSpec,
         functionData,
         defaultData,
-        isEditMode,
-        isStagingMode
+        isEditMode
       )
       const newInitial = {
         ...formState.initialValues,
@@ -316,7 +314,7 @@ const JobWizardFunctionSelection = ({
   }
 
   return (
-    <div className="job-wizard__function-selection form">
+    <div className="job-wizard__function-selection">
       <div className="form-row">
         <h5 className="form-step-title">Function selection</h5>
       </div>
@@ -381,6 +379,8 @@ const JobWizardFunctionSelection = ({
               setMatches={setFilterMatches}
             />
             <FilterMenuModal
+              cancelButton={{ label: 'Clear', variant: 'tertiary' }}
+              header="Filter by category"
               wizardClassName="hub-filter"
               filterMenuName={JOB_WIZARD_FILTERS}
               initialValues={hubFiltersInitialValues}
@@ -431,7 +431,6 @@ JobWizardFunctionSelection.propTypes = {
   frontendSpec: PropTypes.shape({}).isRequired,
   functions: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   isEditMode: PropTypes.bool.isRequired,
-  isStagingMode: PropTypes.bool.isRequired,
   params: PropTypes.shape({}).isRequired,
   selectedFunctionData: PropTypes.shape({}).isRequired,
   setFilteredFunctions: PropTypes.func.isRequired,

@@ -27,6 +27,9 @@ import {
   FETCH_FUNCTION_TEMPLATE_BEGIN,
   FETCH_FUNCTION_TEMPLATE_FAILURE,
   FETCH_FUNCTION_TEMPLATE_SUCCESS,
+  FETCH_HUB_FUNCTION_TEMPLATE_BEGIN,
+  FETCH_HUB_FUNCTION_TEMPLATE_FAILURE,
+  FETCH_HUB_FUNCTION_TEMPLATE_SUCCESS,
   REMOVE_FUNCTION_TEMPLATE,
   SET_FUNCTIONS_TEMPLATES,
   SET_LOADING,
@@ -39,6 +42,7 @@ import {
   SET_NEW_FUNCTION_IMAGE,
   SET_NEW_FUNCTION_BASE_IMAGE,
   SET_NEW_FUNCTION_COMMANDS,
+  SET_NEW_FUNCTION_REQUIREMENTS,
   SET_NEW_FUNCTION_VOLUME_MOUNTS,
   SET_NEW_FUNCTION_VOLUMES,
   SET_NEW_FUNCTION_RESOURCES,
@@ -198,6 +202,29 @@ const functionsActions = {
       })
       .catch(error => dispatch(functionsActions.fetchJobLogsFailure(error)))
   },
+  fetchHubFunction: hubFunctionName => dispatch => {
+    dispatch(functionsActions.fetchHubFunctionTemplateBegin())
+
+    return functionsApi
+      .getHubFunction(hubFunctionName)
+      .then(response => {
+        dispatch(functionsActions.fetchHubFunctionTemplateSuccess())
+        return response.data
+      })
+      .catch((error) => {
+        dispatch(functionsActions.fetchHubFunctionTemplateFailure(error))
+      })
+  },
+  fetchHubFunctionTemplateSuccess: () => ({
+    type: FETCH_HUB_FUNCTION_TEMPLATE_SUCCESS
+  }),
+  fetchHubFunctionTemplateBegin: () => ({
+    type: FETCH_HUB_FUNCTION_TEMPLATE_BEGIN
+  }),
+  fetchHubFunctionTemplateFailure: err => ({
+    type: FETCH_HUB_FUNCTION_TEMPLATE_FAILURE,
+    payload: err
+  }),
   fetchFunctionTemplate: path => dispatch => {
     dispatch(functionsActions.fetchFunctionTemplateBegin())
 
@@ -226,8 +253,6 @@ const functionsActions = {
             error
           })
         )
-
-        throw error
       })
   },
   fetchFunctionTemplateSuccess: selectFunction => ({
@@ -305,6 +330,10 @@ const functionsActions = {
   setNewFunctionCommands: commands => ({
     type: SET_NEW_FUNCTION_COMMANDS,
     payload: commands
+  }),
+  setNewFunctionRequirements: requirements => ({
+    type: SET_NEW_FUNCTION_REQUIREMENTS,
+    payload: requirements
   }),
   setNewFunctionDefaultClass: default_class => ({
     type: SET_NEW_FUNCTION_DEFAULT_CLASS,

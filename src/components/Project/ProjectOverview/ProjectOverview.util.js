@@ -312,7 +312,18 @@ export const getInitialCards = (params, navigate, isDemoMode) => {
         {
           id: 'trainModel',
           icon: <TrainModelIcon />,
-          handleClick: () => {},
+          handleClick: () => {
+            return {
+              component: JobWizard,
+              props: {
+                params,
+                isTrainModel: true,
+                wizardTitle: 'Train model',
+                isOverview: true
+              },
+              type: 'modal'
+            }
+          },
           label: 'Train model',
           tooltip:
             'Train a new model based on an input dataset. You can also define hyperparameters to execute and compare multiple models.',
@@ -410,8 +421,7 @@ export const getInitialCards = (params, navigate, isDemoMode) => {
           },
           label: 'Batch inference',
           tooltip:
-            'Run your model on a large dataset, usually read from an offline source, such as files or databases. The results are written to offline targets.',
-          hidden: !isDemoMode
+            'Run your model on a large dataset, usually read from an offline source, such as files or databases. The results are written to offline targets.'
         },
         {
           id: 'defineAlerts',

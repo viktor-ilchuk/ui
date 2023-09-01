@@ -51,7 +51,6 @@ const JobWizardRunDetails = ({
   frontendSpec,
   isBatchInference,
   isEditMode,
-  isStagingMode,
   jobAdditionalData,
   selectedFunctionData,
   setJobAdditionalData
@@ -83,8 +82,7 @@ const JobWizardRunDetails = ({
         frontendSpec,
         selectedFunctionData,
         defaultData,
-        isEditMode,
-        isStagingMode
+        isEditMode
       )
       setJobData(jobFormData, jobAdditionalData)
     } else if (!isEmpty(selectedFunctionData) && isEmpty(jobAdditionalData)) {
@@ -92,8 +90,7 @@ const JobWizardRunDetails = ({
         frontendSpec,
         selectedFunctionData,
         null,
-        isEditMode,
-        isStagingMode
+        isEditMode
       )
       setJobData(jobFormData, jobAdditionalData)
     }
@@ -103,7 +100,6 @@ const JobWizardRunDetails = ({
     formState.initialValues,
     frontendSpec,
     isEditMode,
-    isStagingMode,
     jobAdditionalData,
     selectedFunctionData,
     setJobAdditionalData,
@@ -158,7 +154,7 @@ const JobWizardRunDetails = ({
 
   return (
     !isEmpty(jobAdditionalData) && (
-      <div className="job-wizard__run-details form">
+      <div className="job-wizard__run-details">
         <div className="form-row">
           <h5 className="form-step-title">Run Details</h5>
         </div>
@@ -186,15 +182,22 @@ const JobWizardRunDetails = ({
               />
             </div>
           )}
-          {jobAdditionalData.methodOptions?.length !== 0 && !isBatchInference && (
-            <div className="form-col-1">
-              <FormSelect
-                name={methodPath}
-                label="Method"
-                options={jobAdditionalData.methodOptions || []}
-              />
-            </div>
-          )}
+          {!isBatchInference ? (
+            jobAdditionalData.methodOptions?.length !== 0 ? (
+              <div className="form-col-1">
+                <FormSelect
+                  label="Method"
+                  name={methodPath}
+                  options={jobAdditionalData.methodOptions || []}
+                  scrollToView={false}
+                />
+              </div>
+            ) : (
+              <div className="form-col-1">
+                <FormInput label="Method" name={methodPath} disabled={isEditMode} />
+              </div>
+            )
+          ) : null}
         </div>
         <div className="form-row">
           <FormChipCell
@@ -224,7 +227,6 @@ JobWizardRunDetails.propTypes = {
   frontendSpec: PropTypes.shape({}).isRequired,
   isBatchInference: PropTypes.bool.isRequired,
   isEditMode: PropTypes.bool.isRequired,
-  isStagingMode: PropTypes.bool.isRequired,
   jobAdditionalData: PropTypes.shape({}).isRequired,
   selectedFunctionData: PropTypes.shape({}).isRequired,
   setJobAdditionalData: PropTypes.func.isRequired

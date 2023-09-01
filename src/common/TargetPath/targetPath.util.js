@@ -19,6 +19,7 @@ such restriction.
 */
 import {
   AZURE_STORAGE_INPUT_PATH_SCHEME,
+  DBFS_STORAGE_INPUT_PATH_SCHEME,
   GOOGLE_STORAGE_INPUT_PATH_SCHEME,
   HTTP_STORAGE_INPUT_PATH_SCHEME,
   HTTPS_STORAGE_INPUT_PATH_SCHEME,
@@ -33,7 +34,8 @@ const targetPathRegex =
   /^(store|v3io|s3|az|gs):(\/\/\/|\/\/)(?!.*:\/\/)([\w\-._~:?#[\]@!$&'()*+,;=]+)\/([\w\-._~:/?#[\]%@!$&'()*+,;=]+)$/i
 const httpTargetPathRegex =
   /^(http|https):(\/\/\/|\/\/)(?!.*:\/\/)([\w\-._~:/?#[\]%@!$&'()*+,;=]+)$/i
-const mlrunTargetPathRegex = /^(artifacts|feature-vectors)\/(.+?)\/(.+?)(#(.+?))?(:(.+?))?(@(.+))?$/
+const mlrunTargetPathRegex =
+  /^(artifacts|feature-vectors|datasets)\/(.+?)\/(.+?)(#(.+?))?(:(.+?))?(@(.+))?$/
 
 export const pathPlaceholders = {
   [MLRUN_STORAGE_INPUT_PATH_SCHEME]: 'artifacts/my-project/my-artifact:my-tag',
@@ -172,6 +174,11 @@ export const getTargetPathOptions = hiddenOptionsIds => [
     className: 'path-type-gs',
     label: 'Google storage',
     id: GOOGLE_STORAGE_INPUT_PATH_SCHEME
+  },
+  {
+    className: 'path-type-dbfs',
+    label: 'Databricks filesystem',
+    id: DBFS_STORAGE_INPUT_PATH_SCHEME
   }
 ]
 

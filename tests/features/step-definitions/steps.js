@@ -79,7 +79,9 @@ import {
   checkCheckbox,
   isCheckboxChecked,
   isCheckboxUnchecked,
-  uncheckCheckbox
+  uncheckCheckbox,
+  verifyCheckboxEnabled,
+  verifyCheckboxDisabled
 } from '../common/actions/checkbox.action'
 import {
   applyDatetimePickerRange,
@@ -228,11 +230,39 @@ Then('verify {string} element on {string} wizard is enabled', async function(
   await verifyElementEnabled(this.driver, pageObjects[wizardName][elementName])
 })
 
+Then('verify {string} not input element in {string} on {string} wizard is enabled', 
+  async function(elementName, accordionName,  wizardName){
+  await verifyElementEnabled(this.driver, pageObjects[wizardName][accordionName][elementName])
+})
+
 Then('verify {string} element on {string} wizard is disabled', async function(
   elementName,
   wizardName
 ) {
   await verifyElementDisabled(this.driver, pageObjects[wizardName][elementName])
+})
+
+Then('verify {string} not input element in {string} on {string} wizard is disabled', 
+  async function(elementName, accordionName,  wizardName) {
+    await verifyElementDisabled(
+      this.driver, 
+      pageObjects[wizardName][accordionName][elementName]
+    )
+  }
+)
+
+Then('verify checkbox {string} element on {string} wizard is enabled', async function(
+  elementName,
+  wizardName
+) {
+  await verifyCheckboxEnabled(this.driver, pageObjects[wizardName][elementName])
+})
+
+Then('verify checkbox {string} element on {string} wizard is disabled', async function(
+  elementName,
+  wizardName
+) {
+  await verifyCheckboxDisabled(this.driver, pageObjects[wizardName][elementName])
 })
 
 Then(
