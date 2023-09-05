@@ -156,7 +156,7 @@ const FeatureSetsPanelTargetStore = ({
         !targetsPathEditData.parquet.isModified)
     ) {
       const targets = cloneDeep(featureStore.newFeatureSet.spec.targets).map(target => {
-        if (target.kind === PARQUET && !targetsPathEditData.parquet.isModified) {
+        if (target.name === PARQUET && !targetsPathEditData.parquet.isModified) {
           target.path = generatePath(
             frontendSpec.feature_store_data_prefixes,
             project,
@@ -164,7 +164,7 @@ const FeatureSetsPanelTargetStore = ({
             featureStore.newFeatureSet.metadata.name,
             data.parquet.partitioned ? '' : PARQUET
           )
-        } else if (target.kind === NOSQL && !targetsPathEditData.online.isModified) {
+        } else if (target.name === NOSQL && !targetsPathEditData.online.isModified) {
           target.path = generatePath(
             frontendSpec.feature_store_data_prefixes,
             project,
@@ -621,11 +621,11 @@ const FeatureSetsPanelTargetStore = ({
           ...data,
           [ONLINE]: {
             ...data[ONLINE],
-            path: data[ONLINE].path || featureStore.newFeatureSet.spec.targets[1].path
+            path: data[ONLINE].path || onlineTarget
           },
           [PARQUET]: {
             ...data[PARQUET],
-            path: data[PARQUET].path || featureStore.newFeatureSet.spec.targets[0].path
+            path: data[PARQUET].path || offlineTarget
           }
         },
         featureSetTargets: featureStore.newFeatureSet.spec.targets,
@@ -648,6 +648,8 @@ const FeatureSetsPanelTargetStore = ({
     data.parquet,
     featureStore.newFeatureSet.spec.passthrough,
     featureStore.newFeatureSet.spec.targets,
+    offlineTarget,
+    onlineTarget,
     partitionRadioButtonsState,
     passthroughtEnabled,
     restoreTargets,
