@@ -552,8 +552,9 @@ const FeatureSetsPanelTargetStore = ({
   )
 
   const clearTargets = useCallback(() => {
-    setSelectedTargetKind([])
-    setNewFeatureSetTarget([])
+    const onlineTargetKind = selectedTargetKind.filter(targetKind => targetKind === ONLINE)
+    setSelectedTargetKind(onlineTargetKind)
+    setNewFeatureSetTarget([onlineTarget])
     setTargetsPathEditData(state => ({
       ...state,
       [PARQUET]: {
@@ -565,8 +566,8 @@ const FeatureSetsPanelTargetStore = ({
         isModified: false
       },
       [ONLINE]: {
-        isEditMode: false,
-        isModified: false
+        ...state[ONLINE],
+        isEditMode: false
       }
     }))
     setDisableButtons(state => ({
@@ -577,7 +578,6 @@ const FeatureSetsPanelTargetStore = ({
     setValidation(state => ({
       ...state,
       isOfflineTargetPathValid: true,
-      isOnlineTargetPathValid: true,
       isExternalOfflineTargetPathValid: true,
       isTargetStoreValid: true
     }))
@@ -603,29 +603,38 @@ const FeatureSetsPanelTargetStore = ({
         [EXTERNAL_OFFLINE]: [...selectedPartitionKindInitialState[EXTERNAL_OFFLINE]]
       }
     })
-  }, [setDisableButtons, setNewFeatureSetTarget, setValidation])
+  }, [onlineTarget, selectedTargetKind, setDisableButtons, setNewFeatureSetTarget, setValidation])
 
   const restoreTargets = useCallback(() => {
     setSelectedTargetKind(previousTargets.selectedTargetKind)
     setNewFeatureSetTarget([...previousTargets.featureSetTargets])
-    setData({ ...previousTargets.data })
+    setData({
+      ...previousTargets.data,
+      [ONLINE]: {
+        ...data[ONLINE]
+      }
+    })
     setSelectedPartitionKind({ ...previousTargets.selectedPartitionKind })
     setPartitionRadioButtonsState({ ...previousTargets.partitionRadioButtonsState })
     setPreviousTargets({})
-  }, [previousTargets, setNewFeatureSetTarget])
+  }, [
+    data,
+    previousTargets.data,
+    previousTargets.featureSetTargets,
+    previousTargets.partitionRadioButtonsState,
+    previousTargets.selectedPartitionKind,
+    previousTargets.selectedTargetKind,
+    setNewFeatureSetTarget
+  ])
 
   useEffect(() => {
     if (featureStore.newFeatureSet.spec.passthrough && !passthroughtEnabled) {
       setPreviousTargets({
         data: {
           ...data,
-          [ONLINE]: {
-            ...data[ONLINE],
-            path: data[ONLINE].path || onlineTarget
-          },
           [PARQUET]: {
             ...data[PARQUET],
-            path: data[PARQUET].path || offlineTarget
+            path: data[PARQUET].path || offlineTarget.path
           }
         },
         featureSetTargets: featureStore.newFeatureSet.spec.targets,

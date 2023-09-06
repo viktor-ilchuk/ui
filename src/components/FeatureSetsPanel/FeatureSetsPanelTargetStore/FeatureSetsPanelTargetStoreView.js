@@ -117,7 +117,6 @@ const FeatureSetsPanelTargetStoreView = ({
                   <>
                     <Select
                       density="medium"
-                      disabled={featureStore.newFeatureSet.spec.passthrough}
                       floatingLabel
                       label="NOSQL Kind"
                       onClick={handleOnlineKindTypeChange}
